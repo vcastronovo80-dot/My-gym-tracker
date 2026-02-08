@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Gym Tracker Ultimate</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#9b59b6">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏋️</text></svg>">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkd5bSBUcmFja2VyIFBSTyIsICJzaG9ydF9uYW1lIjogIkd5bVBybyIsICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmMGZmIiwgInRoZW1lX2NvbG9yIjogIiM5YjU5YjYiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHRleHQgeT0nMC45ZW0nIGZvbnQtc2l6ZT0nOTAnPu+fiyA8L3RleHQ+PC9zdmc+Iiwic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwifV19">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    
+    <style>
+        :root { --primary: #9b59b6; --primary-dark: #8e44ad; --bg: #f8f0ff; --card: #ffffff; --text: #2d3436; --border: #e0d0f0; }
+        [data-theme="dark"] { --primary: #dcd0ff; --bg: #1e1b29; --card: #2d293d; --text: #f0f0f5; --border: #483d8b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; min-height: 100vh; }
+        
+        .container { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; z-index: 1; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 20px; text-align: center; }
+        
+        .tabs { display: flex; background: rgba(0,0,0,0.05); position: relative; z-index: 10; }
+        .tab { flex: 1; padding: 15px; border: none; background: transparent; font-size: 11px; color: var(--text); font-weight: bold; text-transform: uppercase; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--card); }
+        
+        .content { padding: 20px; min-height: 450px; position: relative; z-index: 5; }
+        .page { display: none; } .page.active { display: block; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 16px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; text-align: center; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-danger { background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        
+        .card { background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--card); padding: 20px; border-radius: 20px; width: 90%; max-width: 450px; max-height: 85vh; overflow-y: auto; color: var(--text); }
+        
+        input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 15px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th { text-align: left; color: var(--primary); padding: 8px; border-bottom: 2px solid var(--border); }
+        td { padding: 8px; border-bottom: 1px solid var(--border); }
+        
+        .set-row { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .last-perf { font-size: 10px; color: #888; font-style: italic; }
+        .video-btn { background: #f1c40f; color: white; border: none; padding: 5px 8px; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="container">
+        <div class="header"><div style="font-size: 40px;">🏋️</div><h2>GYM TRACKER ULTIMATE</h2></div>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('training')">Training</button>
+            <button class="tab" onclick="switchTab('plans')">Pläne</button>
+            <button class="tab" onclick="switchTab('progress')">Analyse</button>
+            <button class="tab" onclick="switchTab('settings')">Cloud</button>
+        </div>
+
+        <div class="content">
+            <div id="training-page" class="page active">
+                <div id="no-workout">
+                    <button class="btn" onclick="startWorkout()">Freies Training</button>
+                    <div id="plan-launchpad" style="margin-top:20px"></div>
+                </div>
+                <div id="active-workout" style="display:none">
+                    <h3 id="cur-workout-title" style="color:var(--primary); margin-bottom:15px;"></h3>
+                    <div id="set-display"></div>
+                    <button class="btn" style="background:#2ecc71" onclick="showExSelect()">+ Übung hinzufügen</button>
+                    <button class="btn" style="background:#e74c3c" onclick="finishWorkout()">Training beenden</button>
+                </div>
+            </div>
+
+            <div id="plans-page" class="page">
+                <button class="btn btn-outline" onclick="openPlanModal()">+ Neuen Plan erstellen</button>
+                <div id="plans-list" style="margin-top:20px"></div>
+            </div>
+
+            <div id="progress-page" class="page">
+                <div class="card">
+                    <h4>Körpergewicht</h4>
+                    <div style="display:flex; gap:5px;"><input type="number" id="weight-input" placeholder="kg" step="0.1"><button class="btn" onclick="addWeightRecord()" style="margin:5px 0; width:80px;">Log</button></div>
+                    <canvas id="weightChart" style="max-height:150px;"></canvas>
+                </div>
+                <div class="card">
+                    <h4>Übungsverlauf (1RM)</h4>
+                    <select id="chart-select" onchange="updateChart()"></select>
+                    <canvas id="progressChart" style="margin-top:10px"></canvas>
+                </div>
+                <div class="card">
+                    <h4>Bestleistungen (PR)</h4>
+                    <table id="pr-table">
+                        <thead><tr><th>Übung</th><th>Max</th><th>1RM</th></tr></thead>
+                        <tbody id="pr-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="settings-page" class="page">
+                <div class="card">
+                    <h4>Cloud Backup (Google Drive)</h4>
+                    <div style="display:flex; gap:10px">
+                        <button class="btn" style="background:#4285F4; flex:1" onclick="exportData()">1. Export</button>
+                        <button class="btn" style="background:#34a853; flex:1" onclick="window.open('https://drive.google.com/drive/my-drive')">2. Drive</button>
+                    </div>
+                </div>
+                <button class="btn btn-outline" onclick="toggleDark()">Dark Mode umschalten</button>
+                <button class="btn btn-outline" onclick="document.getElementById('add-ex-modal').classList.add('active')">+ Eigene Übung hinzufügen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plan-modal" class="modal"><div class="modal-content">
+        <h3>Plan erstellen</h3>
+        <input type="text" id="plan-name-input" placeholder="Name (z.B. Oberkörper)">
+        <select id="plan-ex-adder" onchange="addExToTempPlan()"><option value="">+ Übung hinzufügen</option></select>
+        <div id="temp-plan-list" style="margin:15px 0"></div>
+        <button class="btn" onclick="savePlan()">Speichern</button>
+        <button class="btn btn-outline" onclick="closeModal('plan-modal')">Abbrechen</button>
+    </div></div>
+
+    <div id="ex-modal" class="modal"><div class="modal-content">
+        <h3>Übung wählen</h3><div id="ex-btn-list" style="max-height:350px; overflow-y:auto"></div><button class="btn btn-outline" onclick="closeModal('ex-modal')">Schließen</button>
+    </div></div>
+
+    <div id="video-modal" class="modal"><div class="modal-content">
+        <h3 id="video-title">Anleitung</h3><div id="video-frame" style="position:relative; padding-bottom:56.25%; height:0; border-radius:10px; overflow:hidden; background:#000"></div><button class="btn btn-outline" onclick="closeModal('video-modal')" style="margin-top:10px">Schließen</button>
+    </div></div>
+
+    <div id="add-ex-modal" class="modal"><div class="modal-content">
+        <h3>Neue Übung</h3>
+        <input type="text" id="new-ex-name-input" placeholder="Name">
+        <button class="btn" onclick="addNewExercise()">Erstellen</button>
+        <button class="btn btn-outline" onclick="closeModal('add-ex-modal')">Abbrechen</button>
+    </div></div>
+
+    <script>
+        const initialExercises = [
+            {id:1, name:'Chest Press', vid:'nwSshndXyv4'}, {id:2, name:'Horizotales Rudern', vid:'GZbfZ033f74'},
+            {id:3, name:'Schulterpresse', vid:'WvLMauqrnK8'}, {id:4, name:'Klimmzüge (Weit)', vid:'iWBvSshWsh0'},
+            {id:5, name:'Triceps Extension', vid:'6FzKu2n_pI0'}, {id:6, name:'Leg Press Plate Loaded', vid:'IZxyjW7mpJQ'},
+            {id:7, name:'Hüftstossen Plate Loaded', vid:'A8nFGuY77CE'}, {id:8, name:'Chin Ups', vid:'brh-y-n75oA'},
+            {id:9, name:'Schulterpresse KH', vid:'qEwK6jnzbcA'}, {id:10, name:'Row Plate Loaded', vid:'3p8EejzZidw'},
+            {id:11, name:'Pectoral Fly Vertical', vid:'eGjwU2_q3X8'}, {id:12, name:'Biceps Curl', vid:'yTwoOK9Q_OQ'},
+            {id:13, name:'Leg Extension', vid:'YyvSfVlv-pI'}, {id:14, name:'Romanian Deadlift LH', vid:'JCXUYuzwvgQ'},
+            {id:15, name:'Hack Squat Plate Loaded', vid:'0EnKyvM9N2Y'}, {id:16, name:'Leg Curl', vid:'1Tq3QdAU0bs'},
+            {id:17, name:'Bench Press LH', vid:'rT7DgBET-m8'}, {id:18, name:'Bent Over Row LH', vid:'6TSz9Pa4Svk'},
+            {id:19, name:'Seitliches Heben', vid:'3VcKaXpzqRo'}, {id:20, name:'Hammer Curls', vid:'7jAd2DwiA_I'},
+            {id:21, name:'Dips Maschine', vid:'yP_XpWn_70o'}
+        ];
+
+        let db = JSON.parse(localStorage.getItem('gym_v_final_ultra')) || { exercises: initialExercises, workouts: [], plans: [], weightHistory: [], dark: false };
+        let curW = null; let selId = null; let tempPlanEx = []; let pChart = null; let wChart = null;
+
+        function save() { localStorage.setItem('gym_v_final_ultra', JSON.stringify(db)); render(); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function calc1RM(w, r) { return (!w || !r || r < 1) ? 0 : (r === 1 ? w : w * (36 / (37 - r))); }
+
+        function switchTab(t) {
+            document.querySelectorAll('.page, .tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(t + '-page').classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(t==='progress') { updateChart(); updateWeightChart(); renderPRs(); }
+        }
+
+        function toggleDark() { db.dark = !db.dark; applyTheme(); save(); }
+        function applyTheme() { document.body.setAttribute('data-theme', db.dark ? 'dark' : 'light'); }
+
+        function getLastPerformance(exId) {
+            const sorted = [...db.workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
+            for (let w of sorted) {
+                const sets = w.sets.filter(s => s.exId == exId);
+                if (sets.length > 0) return sets;
+            }
+            return null;
+        }
+
+        // --- TRAINING ---
+        function startWorkout(plan = null) {
+            curW = { id: Date.now(), date: new Date(), name: plan ? plan.name : "Freies Training", sets: [] };
+            if(plan && plan.exercises) {
+                plan.exercises.forEach(pEx => {
+                    const lastSets = getLastPerformance(pEx.id);
+                    const sCount = pEx.sets || (lastSets ? lastSets.length : 3);
+                    for(let i=0; i < sCount; i++) curW.sets.push({ exId: pEx.id, w: (lastSets && lastSets[i] ? lastSets[i].w : 0), r: 0 });
+                });
+            }
+            document.getElementById('no-workout').style.display = 'none';
+            document.getElementById('active-workout').style.display = 'block';
+            document.getElementById('cur-workout-title').innerText = curW.name;
+            renderSets();
+        }
+
+        function renderSets() {
+            const div = document.getElementById('set-display'); div.innerHTML = '';
+            const grouped = {};
+            curW.sets.forEach(s => { if(!grouped[s.exId]) grouped[s.exId] = []; grouped[s.exId].push(s); });
+            for(let id in grouped) {
+                const ex = db.exercises.find(e => e.id == id);
+                const lastSets = getLastPerformance(id);
+                div.innerHTML += `<div class="card"><strong style="color:var(--primary)">${ex.name}</strong>` + 
+                    grouped[id].map((s,i) => {
+                        const last = (lastSets && lastSets[i]) ? `${lastSets[i].w}kg x ${lastSets[i].r}` : "--";
+                        return `<div class="set-row">
+                            <span class="last-perf">Zuletzt: ${last} | Est. 1RM: ${calc1RM(s.w, s.r).toFixed(1)}kg</span>
+                            <div style="display:flex; gap:5px"><input type="number" value="${s.w||''}" placeholder="kg" oninput="updateSetLive(${id},${i},'w',this.value)" style="flex:1"><input type="number" value="${s.r||''}" placeholder="Wdh" oninput="updateSetLive(${id},${i},'r',this.value)" style="flex:1"></div>
+                        </div>`;
+                    }).join('') + `</div>`;
+            }
+        }
+
+        function updateSetLive(exId, index, key, val) {
+            const rel = curW.sets.filter(s => s.exId == exId);
+            rel[index][key] = parseFloat(val);
+            renderSets();
+        }
+
+        function finishWorkout() { if(confirm("Training speichern?")) { db.workouts.push(curW); curW = null; document.getElementById('no-workout').style.display='block'; document.getElementById('active-workout').style.display='none'; save(); } }
+
+        function showExSelect() {
+            const list = document.getElementById('ex-btn-list');
+            list.innerHTML = db.exercises.map(ex => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span onclick="addSingleEx(${ex.id})" style="flex:1; cursor:pointer">${ex.name}</span>${ex.vid ? `<button class="video-btn" onclick="openVideo('${ex.name}', '${ex.vid}')">▶</button>` : ''}</div>`).join('');
+            document.getElementById('ex-modal').classList.add('active');
+        }
+
+        function addSingleEx(id) { for(let i=0; i<3; i++) curW.sets.push({ exId: id, w: 0, r: 0 }); closeModal('ex-modal'); renderSets(); }
+        function openVideo(name, vid) { document.getElementById('video-title').innerText = name; document.getElementById('video-frame').innerHTML = `<iframe src="https://www.youtube.com/embed/${vid}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>`; document.getElementById('video-modal').classList.add('active'); }
+
+        // --- ANALYSE ---
+        function renderPRs() {
+            const body = document.getElementById('pr-body'); body.innerHTML = '';
+            db.exercises.forEach(ex => {
+                let maxW = 0, best1RM = 0;
+                db.workouts.forEach(w => {
+                    w.sets.filter(s => s.exId == ex.id).forEach(s => {
+                        if(s.w > maxW) maxW = s.w;
+                        const rm = calc1RM(s.w, s.r);
+                        if(rm > best1RM) best1RM = rm;
+                    });
+                });
+                if(maxW > 0) body.innerHTML += `<tr><td>${ex.name}</td><td>${maxW}kg</td><td>${best1RM.toFixed(1)}kg</td></tr>`;
+            });
+        }
+
+        function updateWeightChart() {
+            const data = db.weightHistory.map(h => ({x: new Date(h.date), y: h.w})).sort((a,b)=>a.x-b.x);
+            if(wChart) wChart.destroy();
+            wChart = new Chart(document.getElementById('weightChart'), { type:'line', data:{datasets:[{label:'kg', data:data, borderColor:'#9b59b6', tension:0.3}]}, options:{scales:{x:{type:'time'}}}});
+        }
+
+        function updateChart() {
+            const id = document.getElementById('chart-select').value;
+            const data = db.workouts.map(w => {
+                const s = w.sets.filter(x => x.exId == id);
+                if(!s.length) return null;
+                return {x: new Date(w.date), y: Math.max(...s.map(x => calc1RM(x.w, x.r)))};
+            }).filter(d=>d).sort((a,b)=>a.x-b.x);
+            if(pChart) pChart.destroy();
+            pChart = new Chart(document.getElementById('progressChart'), { type:'line', data:{datasets:[{label:'1RM kg', data:data, borderColor:'#9b59b6', tension:0.3, pointRadius: 5}]}, options:{scales:{x:{type:'time'}}}});
+        }
+
+        function addWeightRecord() { const w = parseFloat(document.getElementById('weight-input').value); if(w) { db.weightHistory.push({date:new Date(), w:w}); save(); updateWeightChart(); } }
+
+        // --- PLÄNE & SETTINGS ---
+        function openPlanModal() {
+            tempPlanEx = [];
+            document.getElementById('plan-ex-adder').innerHTML = '<option value="">+ Übung hinzufügen</option>' + db.exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('');
+            renderTempPlan(); document.getElementById('plan-modal').classList.add('active');
+        }
+        function addExToTempPlan() { const id = document.getElementById('plan-ex-adder').value; if(id) { tempPlanEx.push({ ...db.exercises.find(e => e.id == id), sets: 3 }); renderTempPlan(); } }
+        function renderTempPlan() { document.getElementById('temp-plan-list').innerHTML = tempPlanEx.map((ex, i) => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span>${ex.name}</span><div><input type="number" value="${ex.sets}" onchange="tempPlanEx[${i}].sets=parseInt(this.value)" style="width:40px"> Sätze <button onclick="tempPlanEx.splice(${i},1);renderTempPlan()" class="btn-danger">X</button></div></div>`).join(''); }
+        function savePlan() { const n = document.getElementById('plan-name-input').value; if(n && tempPlanEx.length) { db.plans.push({id:Date.now(), name:n, exercises:tempPlanEx}); save(); closeModal('plan-modal'); } }
+        function deletePlan(id) { if(confirm("Löschen?")) { db.plans = db.plans.filter(p => p.id !== id); save(); } }
+        function exportData() { const blob = new Blob([JSON.stringify(db)], {type:"application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download=`gym_backup.json`; a.click(); }
+        function addNewExercise() { const n = document.getElementById('new-ex-name-input').value; if(n) { db.exercises.push({id:Date.now(), name:n, vid:''}); save(); closeModal('add-ex-modal'); } }
+
+        function render() {
+            document.getElementById('plan-launchpad').innerHTML = db.plans.map(p => `<button class="btn btn-outline" onclick='startWorkout(${JSON.stringify(p)})'>Plan: ${p.name}</button>`).join('');
+            document.getElementById('plans-list').innerHTML = db.plans.map(p => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span><strong>${p.name}</strong></span><button class="btn-danger" onclick="deletePlan(${p.id})">Löschen</button></div>`).join('');
+            document.getElementById('chart-select').innerHTML = db.exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+        }
+
+        applyTheme(); render();
+    </script>
+</body>
+</html>

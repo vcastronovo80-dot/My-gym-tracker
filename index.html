@@ -9,8 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#9b59b6">
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🏋️</text></svg>">
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkd5bSBUcmFja2VyIFBSTyIsICJzaG9ydF9uYW1lIjogIkd5bVBybyIsICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmMGZmIiwgInRoZW1lX2NvbG9yIjogIiM5YjU5YjYiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHRleHQgeT0nMC45ZW0nIGZvbnQtc2l6ZT0nOTAnPu+fiyA8L3RleHQ+PC9zdmc+Iiwic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwifV19">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%239b59b6'/><path d='M30 50h40M30 40v20M70 40v20' stroke='white' stroke-width='8' stroke-linecap='round'/></svg>">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkd5bSBUcmFja2VyIFBSTyIsICJzaG9ydF9uYW1lIjogIkd5bVBybyIsICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjhmMGZmIiwgInRoZW1lX2NvbG9yIjogIiM5YjU5YjYiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nJTIzOWI1OWI2Jy8+PHBhdGggZD0nTTMwIDUwaDQwTTMwIDQwdjIwTTcwIDQwdjIwJyBzdHJva2U9J3doaXRlJyBzdHJva2Utd2lkdGg9JzgnIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcvPjwvc3ZnPiIsInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9zdmcreG1sIn1dfQ==">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
@@ -38,15 +38,16 @@
         .card { background: var(--bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
-        .modal-content { background: var(--card); padding: 20px; border-radius: 20px; width: 90%; max-width: 450px; max-height: 85vh; overflow-y: auto; color: var(--text); }
+        .modal-content { background: var(--card); padding: 20px; border-radius: 20px; width: 95%; max-width: 450px; max-height: 85vh; overflow-y: auto; color: var(--text); }
         
         input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); font-size: 15px; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th { text-align: left; color: var(--primary); padding: 8px; border-bottom: 2px solid var(--border); }
-        td { padding: 8px; border-bottom: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+        th { text-align: left; color: var(--primary); padding: 5px; border-bottom: 2px solid var(--border); }
+        td { padding: 8px 5px; border-bottom: 1px solid var(--border); }
         
         .set-row { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .target-reps { font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 2px; }
         .last-perf { font-size: 10px; color: #888; font-style: italic; }
         .video-btn { background: #f1c40f; color: white; border: none; padding: 5px 8px; border-radius: 8px; cursor: pointer; }
     </style>
@@ -54,7 +55,10 @@
 <body data-theme="light">
 
     <div class="container">
-        <div class="header"><div style="font-size: 40px;">🏋️</div><h2>GYM TRACKER PRO</h2></div>
+        <div class="header">
+            <div style="font-size: 40px;">🏋️</div>
+            <h2>GYM TRACKER PRO</h2>
+        </div>
         <div class="tabs">
             <button class="tab active" onclick="switchTab('training')">Training</button>
             <button class="tab" onclick="switchTab('plans')">Pläne</button>
@@ -88,14 +92,14 @@
                     <canvas id="weightChart" style="max-height:150px;"></canvas>
                 </div>
                 <div class="card">
-                    <h4>Verlauf pro Übung (1RM)</h4>
+                    <h4>Kraftverlauf (1RM)</h4>
                     <select id="chart-select" onchange="updateChart()"></select>
                     <canvas id="progressChart" style="margin-top:10px"></canvas>
                 </div>
                 <div class="card">
                     <h4>Bestleistungen (PR)</h4>
                     <table>
-                        <thead><tr><th>Übung</th><th>Max</th><th>1RM</th></tr></thead>
+                        <thead><tr><th>Übung</th><th>Max kg</th><th>Max Wdh</th><th>1RM</th></tr></thead>
                         <tbody id="pr-body"></tbody>
                     </table>
                 </div>
@@ -103,21 +107,21 @@
 
             <div id="settings-page" class="page">
                 <div class="card">
-                    <h4>Cloud Backup</h4>
+                    <h4>Backup</h4>
                     <div style="display:flex; gap:10px">
                         <button class="btn" style="background:#4285F4; flex:1" onclick="exportData()">Export</button>
                         <button class="btn" style="background:#34a853; flex:1" onclick="window.open('https://drive.google.com/drive/my-drive')">Drive</button>
                     </div>
                 </div>
-                <button class="btn btn-outline" onclick="toggleDark()">Dark Mode umschalten</button>
-                <button class="btn btn-outline" onclick="document.getElementById('add-ex-modal').classList.add('active')">+ Eigene Übung hinzufügen</button>
+                <button class="btn btn-outline" onclick="toggleDark()">Dark Mode</button>
+                <button class="btn btn-outline" onclick="document.getElementById('add-ex-modal').classList.add('active')">+ Eigene Übung erstellen</button>
             </div>
         </div>
     </div>
 
     <div id="plan-modal" class="modal"><div class="modal-content">
         <h3>Plan erstellen</h3>
-        <input type="text" id="plan-name-input" placeholder="Name">
+        <input type="text" id="plan-name-input" placeholder="Plan Name">
         <select id="plan-ex-adder" onchange="addExToTempPlan()"><option value="">+ Übung hinzufügen</option></select>
         <div id="temp-plan-list" style="margin:15px 0"></div>
         <button class="btn" onclick="savePlan()">Speichern</button>
@@ -126,6 +130,14 @@
 
     <div id="ex-modal" class="modal"><div class="modal-content">
         <h3>Übung wählen</h3><div id="ex-btn-list" style="max-height:350px; overflow-y:auto"></div><button class="btn btn-outline" onclick="closeModal('ex-modal')">Schließen</button>
+    </div></div>
+
+    <div id="set-entry-modal" class="modal"><div class="modal-content">
+        <h3 id="entry-ex-name">Sätze</h3>
+        <input type="number" id="num-sets-select" value="3">
+        <input type="number" id="global-weight" placeholder="Gewicht (kg)">
+        <button class="btn" onclick="saveMultipleSets()">Hinzufügen</button>
+        <button class="btn btn-outline" onclick="closeModal('set-entry-modal')">Abbrechen</button>
     </div></div>
 
     <div id="video-modal" class="modal"><div class="modal-content">
@@ -154,10 +166,10 @@
             {id:21, name:'Dips Maschine', vid:'yP_XpWn_70o'}
         ];
 
-        let db = JSON.parse(localStorage.getItem('gym_v_final_ultra_v2')) || { exercises: initialExercises, workouts: [], plans: [], weightHistory: [], dark: false };
+        let db = JSON.parse(localStorage.getItem('gym_v_final_pwa_fix')) || { exercises: initialExercises, workouts: [], plans: [], weightHistory: [], dark: false };
         let curW = null; let tempPlanEx = []; let pChart = null; let wChart = null;
 
-        function save() { localStorage.setItem('gym_v_final_ultra_v2', JSON.stringify(db)); render(); }
+        function save() { localStorage.setItem('gym_v_final_pwa_fix', JSON.stringify(db)); render(); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function calc1RM(w, r) { return (!w || !r || r < 1) ? 0 : (r === 1 ? w : w * (36 / (37 - r))); }
 
@@ -165,23 +177,11 @@
             document.querySelectorAll('.page, .tab').forEach(el => el.classList.remove('active'));
             document.getElementById(t + '-page').classList.add('active');
             event.currentTarget.classList.add('active');
-            if(t==='progress') { 
-                updateChart(); 
-                updateWeightChart(); 
-                renderPRs(); 
-                fillChartSelect(); 
-            }
+            if(t==='progress') { updateChart(); updateWeightChart(); renderPRs(); }
         }
 
         function toggleDark() { db.dark = !db.dark; applyTheme(); save(); }
         function applyTheme() { document.body.setAttribute('data-theme', db.dark ? 'dark' : 'light'); }
-
-        function fillChartSelect() {
-            const select = document.getElementById('chart-select');
-            const currentVal = select.value;
-            select.innerHTML = db.exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
-            if(currentVal) select.value = currentVal;
-        }
 
         function getLastPerformance(exId) {
             const sorted = [...db.workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -198,7 +198,12 @@
                 plan.exercises.forEach(pEx => {
                     const lastSets = getLastPerformance(pEx.id);
                     const sCount = pEx.sets || (lastSets ? lastSets.length : 3);
-                    for(let i=0; i < sCount; i++) curW.sets.push({ exId: pEx.id, w: (lastSets && lastSets[i] ? lastSets[i].w : 0), r: 0 });
+                    for(let i=0; i < sCount; i++) curW.sets.push({ 
+                        exId: pEx.id, 
+                        w: (lastSets && lastSets[i] ? lastSets[i].w : 0), 
+                        r: 0,
+                        targetReps: pEx.targetReps || 0
+                    });
                 });
             }
             document.getElementById('no-workout').style.display = 'none';
@@ -217,21 +222,23 @@
                 div.innerHTML += `<div class="card"><strong style="color:var(--primary)">${ex.name}</strong>` + 
                     grouped[id].map((s,i) => {
                         const last = (lastSets && lastSets[i]) ? `${lastSets[i].w}kg x ${lastSets[i].r}` : "--";
+                        const target = s.targetReps ? `<div class="target-reps">Ziel: ${s.targetReps} Wdh</div>` : "";
                         return `<div class="set-row">
+                            ${target}
                             <span class="last-perf">Zuletzt: ${last} | Est. 1RM: ${calc1RM(s.w, s.r).toFixed(1)}kg</span>
-                            <div style="display:flex; gap:5px"><input type="number" value="${s.w||''}" placeholder="kg" oninput="updateSetLive(${id},${i},'w',this.value)" style="flex:1"><input type="number" value="${s.r||''}" placeholder="Wdh" oninput="updateSetLive(${id},${i},'r',this.value)" style="flex:1"></div>
+                            <div style="display:flex; gap:5px"><input type="number" value="${s.w||''}" placeholder="kg" oninput="updateSetVal(${id},${i},'w',this.value)" style="flex:1"><input type="number" value="${s.r||''}" placeholder="Wdh" oninput="updateSetVal(${id},${i},'r',this.value)" style="flex:1"></div>
                         </div>`;
                     }).join('') + `</div>`;
             }
         }
 
-        function updateSetLive(exId, index, key, val) {
+        function updateSetVal(exId, index, key, val) {
             const rel = curW.sets.filter(s => s.exId == exId);
             rel[index][key] = parseFloat(val);
             renderSets();
         }
 
-        function finishWorkout() { if(confirm("Training speichern?")) { db.workouts.push(curW); curW = null; document.getElementById('no-workout').style.display='block'; document.getElementById('active-workout').style.display='none'; save(); } }
+        function finishWorkout() { if(confirm("Speichern?")) { db.workouts.push(curW); curW = null; document.getElementById('no-workout').style.display='block'; document.getElementById('active-workout').style.display='none'; save(); } }
 
         function showExSelect() {
             const list = document.getElementById('ex-btn-list');
@@ -240,67 +247,56 @@
         }
 
         function addSingleEx(id) { for(let i=0; i<3; i++) curW.sets.push({ exId: id, w: 0, r: 0 }); closeModal('ex-modal'); renderSets(); }
-        function openVideo(name, vid) { document.getElementById('video-title').innerText = name; document.getElementById('video-frame').innerHTML = `<iframe src="https://www.youtube.com/embed/${vid}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>`; document.getElementById('video-modal').classList.add('active'); }
+        
+        function openPlanModal() {
+            tempPlanEx = [];
+            document.getElementById('plan-ex-adder').innerHTML = '<option value="">+ Übung hinzufügen</option>' + db.exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('');
+            renderTempPlan(); document.getElementById('plan-modal').classList.add('active');
+        }
+        function addExToTempPlan() { const id = document.getElementById('plan-ex-adder').value; if(id) { tempPlanEx.push({ ...db.exercises.find(e => e.id == id), sets: 3, targetReps: 10 }); renderTempPlan(); } }
+        function renderTempPlan() { document.getElementById('temp-plan-list').innerHTML = tempPlanEx.map((ex, i) => `<div class="card"><strong>${ex.name}</strong><div style="display:flex; gap:10px; margin-top:5px;"><input type="number" value="${ex.sets}" onchange="tempPlanEx[${i}].sets=parseInt(this.value)" style="flex:1" placeholder="Sätze"><input type="number" value="${ex.targetReps}" onchange="tempPlanEx[${i}].targetReps=parseInt(this.value)" style="flex:1" placeholder="Wdh"></div><button onclick="tempPlanEx.splice(${i},1);renderTempPlan()" class="btn-danger" style="margin-top:5px">X</button></div>`).join(''); }
+        function savePlan() { const n = document.getElementById('plan-name-input').value; if(n && tempPlanEx.length) { db.plans.push({id:Date.now(), name:n, exercises:tempPlanEx}); save(); closeModal('plan-modal'); } }
+        function deletePlan(id) { if(confirm("Löschen?")) { db.plans = db.plans.filter(p => p.id !== id); save(); } }
 
         function renderPRs() {
             const body = document.getElementById('pr-body'); body.innerHTML = '';
             db.exercises.forEach(ex => {
-                let maxW = 0, best1RM = 0;
+                let maxW = 0, maxR = 0, best1RM = 0;
                 db.workouts.forEach(w => {
                     w.sets.filter(s => s.exId == ex.id).forEach(s => {
                         if(s.w > maxW) maxW = s.w;
+                        if(s.r > maxR) maxR = s.r;
                         const rm = calc1RM(s.w, s.r);
                         if(rm > best1RM) best1RM = rm;
                     });
                 });
-                if(maxW > 0) body.innerHTML += `<tr><td>${ex.name}</td><td>${maxW}kg</td><td>${best1RM.toFixed(1)}kg</td></tr>`;
+                if(maxW > 0) body.innerHTML += `<tr><td>${ex.name}</td><td>${maxW}kg</td><td>${maxR}</td><td>${best1RM.toFixed(1)}kg</td></tr>`;
             });
         }
 
         function updateWeightChart() {
             const data = db.weightHistory.map(h => ({x: new Date(h.date), y: h.w})).sort((a,b)=>a.x-b.x);
             if(wChart) wChart.destroy();
-            const ctx = document.getElementById('weightChart').getContext('2d');
-            wChart = new Chart(ctx, { type:'line', data:{datasets:[{label:'kg', data:data, borderColor:'#9b59b6', tension:0.3}]}, options:{scales:{x:{type:'time'}}}});
+            wChart = new Chart(document.getElementById('weightChart'), { type:'line', data:{datasets:[{label:'kg', data:data, borderColor:'#9b59b6', tension:0.3}]}, options:{scales:{x:{type:'time'}}}});
         }
-
         function updateChart() {
-            const id = document.getElementById('chart-select').value;
-            if(!id) return;
+            const id = document.getElementById('chart-select').value; if(!id) return;
             const data = db.workouts.map(w => {
                 const s = w.sets.filter(x => x.exId == id);
                 if(!s.length) return null;
                 return {x: new Date(w.date), y: Math.max(...s.map(x => calc1RM(x.w, x.r)))};
             }).filter(d=>d).sort((a,b)=>a.x-b.x);
             if(pChart) pChart.destroy();
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            pChart = new Chart(ctx, { type:'line', data:{datasets:[{label:'1RM kg', data:data, borderColor:'#9b59b6', tension:0.3, pointRadius: 5}]}, options:{scales:{x:{type:'time'}}}});
+            pChart = new Chart(document.getElementById('progressChart'), { type:'line', data:{datasets:[{label:'1RM kg', data:data, borderColor:'#9b59b6', tension:0.3}]}, options:{scales:{x:{type:'time'}}}});
         }
 
-        function addWeightRecord() { const w = parseFloat(document.getElementById('weight-input').value); if(w) { db.weightHistory.push({date:new Date(), w:w}); save(); updateWeightChart(); } }
-
-        function openPlanModal() {
-            tempPlanEx = [];
-            document.getElementById('plan-ex-adder').innerHTML = '<option value="">+ Übung hinzufügen</option>' + db.exercises.map(ex => `<option value="${ex.id}">${ex.name}</option>`).join('');
-            renderTempPlan(); document.getElementById('plan-modal').classList.add('active');
-        }
-        function addExToTempPlan() { const id = document.getElementById('plan-ex-adder').value; if(id) { tempPlanEx.push({ ...db.exercises.find(e => e.id == id), sets: 3 }); renderTempPlan(); } }
-        function renderTempPlan() { document.getElementById('temp-plan-list').innerHTML = tempPlanEx.map((ex, i) => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span>${ex.name}</span><div><input type="number" value="${ex.sets}" onchange="tempPlanEx[${i}].sets=parseInt(this.value)" style="width:40px"> Sätze <button onclick="tempPlanEx.splice(${i},1);renderTempPlan()" class="btn-danger">X</button></div></div>`).join(''); }
-        function savePlan() { const n = document.getElementById('plan-name-input').value; if(n && tempPlanEx.length) { db.plans.push({id:Date.now(), name:n, exercises:tempPlanEx}); save(); closeModal('plan-modal'); } }
-        function deletePlan(id) { if(confirm("Löschen?")) { db.plans = db.plans.filter(p => p.id !== id); save(); } }
         function exportData() { const blob = new Blob([JSON.stringify(db)], {type:"application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download=`gym_backup.json`; a.click(); }
         function addNewExercise() { const n = document.getElementById('new-ex-name-input').value; if(n) { db.exercises.push({id:Date.now(), name:n, vid:''}); save(); closeModal('add-ex-modal'); } }
 
         function render() {
             document.getElementById('plan-launchpad').innerHTML = db.plans.map(p => `<button class="btn btn-outline" onclick='startWorkout(${JSON.stringify(p)})'>Plan: ${p.name}</button>`).join('');
             document.getElementById('plans-list').innerHTML = db.plans.map(p => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span><strong>${p.name}</strong></span><button class="btn-danger" onclick="deletePlan(${p.id})">Löschen</button></div>`).join('');
-            fillChartSelect();
-        }
-
-        if ('serviceWorker' in navigator) {
-            const sw = `self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));`;
-            const blob = new Blob([sw], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob));
+            document.getElementById('chart-select').innerHTML = db.exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
         }
 
         applyTheme(); render();
